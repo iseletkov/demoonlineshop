@@ -1,15 +1,16 @@
 package ru.studyit.testclass;
 
+import org.apache.poi.ss.usermodel.*;
 import ru.studyit.testclass.model.CGood;
 import ru.studyit.testclass.model.COrder;
 import ru.studyit.testclass.model.CUser;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.regex.Pattern;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class Main {
     //Сделал форматтер "глобальной" переменной, т.к. используется в двух методах - во вводе и выводе.
@@ -204,9 +205,77 @@ public class Main {
             }
         }
     }
+    private static void outUsersExcel(Workbook wb, ArrayList<CUser> users)
+    {
+        Sheet sheet = wb.createSheet("Пользователи");
+        //Выводим шапку таблицы   Логин                     | Пол | Дата рождения | Возраст
+        CellStyle style = wb.createCellStyle();
+        style.setFillForegroundColor(IndexedColors.AQUA.getIndex());
+        style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
+        Row row = sheet.createRow(0);
+        Cell cell = row.createCell(0);
+        cell.setCellValue("ID");
+        cell.setCellStyle(style);
+        cell = row.createCell(1);
+        cell.setCellValue("Логин");
+        cell.setCellStyle(style);
+        cell = row.createCell(2);
+        cell.setCellValue("Пол");
+        cell.setCellStyle(style);
+        cell = row.createCell(3);
+        cell.setCellValue("Дата рождения");
+        cell.setCellStyle(style);
+        cell = row.createCell(4);
+        cell.setCellValue("Возраст");
+        cell.setCellStyle(style);
+
+
+        int nRow = 1;
+        for (CUser user : users) {
+            row = sheet.createRow(nRow);
+            nRow++;
+
+            cell = row.createCell(0);
+            cell.setCellValue(user.getId().toString());
+            cell = row.createCell(1);
+            cell.setCellValue(user.getLogin());
+            cell = row.createCell(2);
+            cell.setCellValue(user.getSex() ? "М" : "Ж");
+            cell = row.createCell(3);
+            cell.setCellValue(user.getDateOfBirth().format(formatter));
+            cell = row.createCell(4);
+            cell.setCellValue(user.getAge());
+        }
+
+    }
+    private static void createExcel(ArrayList<CUser> users)
+    {
+        Workbook wb = new XSSFWorkbook();
+        outUsersExcel(wb, users);
+        //outPurchasedGoodsExcel(wb);
+
+        try (OutputStream fileOut = new FileOutputStream("workbook.xlsx")) {
+            wb.write(fileOut);
+        }
+        catch(FileNotFoundException e)
+        {
+            System.out.println("Нет прав на запись в эту папку");
+            e.printStackTrace();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+
+    }
+
     public static void main(String[] args) {
         load();
         out(users);
+
+
+        createExcel(users);
 
         TreeMap<UUID, Integer> purchasedGoods = getPurchasedGoods();
         outPurchasedGoods(purchasedGoods);
