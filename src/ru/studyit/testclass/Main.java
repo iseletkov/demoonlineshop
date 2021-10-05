@@ -1,12 +1,15 @@
 package ru.studyit.testclass;
 
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xwpf.usermodel.*;
 import ru.studyit.testclass.model.CGood;
 import ru.studyit.testclass.model.COrder;
 import ru.studyit.testclass.model.CUser;
 
 import java.io.*;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -131,12 +134,60 @@ public class Main {
 
         }
     }
+    private static void loadUsersExcel()
+    {
+        File file = new File("input_data.xlsx");
+        try (XSSFWorkbook wb = new XSSFWorkbook(file))
+        {
+            Sheet sheet = wb.getSheet("Пользователи");
+            int rows = sheet.getLastRowNum();
+            Row row;
+            Cell cell;
+            String temp, login;
+            UUID id;
+            boolean sex;
+            LocalDate dateOfBirth;
+            Double millis;
 
+
+            for (int i=1; i<=rows; i++) {
+                row = sheet.getRow(i);
+                if (row==null)
+                    continue;
+
+                cell = row.getCell(0);
+                temp = cell.getStringCellValue();
+                id = UUID.fromString(temp);
+
+                cell = row.getCell(3);
+                login = cell.getStringCellValue();
+
+                cell = row.getCell(1);
+                sex = cell.getNumericCellValue()==1;
+
+                cell = row.getCell(2);
+                //Преобразование даты из строки в специальный объект LocalDate.
+                dateOfBirth = cell.getDateCellValue().toInstant()
+                        .atZone(ZoneId.systemDefault())
+                        .toLocalDate();
+
+
+                users.add(new CUser(id, login, dateOfBirth, sex));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     private static void load()
     {
-        loadUsers();
+        /*loadUsers();*/
         loadGoods();
         loadOrders();
+
+        loadUsersExcel();
+        //loadGoodsExcel();
+        //loadOrdersExcel();
     }
     /****************************************************************************************************
      * Вывод списка пользователей в консоль.                                                            *
@@ -270,6 +321,60 @@ public class Main {
 
     }
 
+    private static void createWord(CUser user)
+    {
+        try (XWPFDocument doc = new XWPFDocument()) {
+            XWPFParagraph p1 = doc.createParagraph();
+            p1.setAlignment(ParagraphAlignment.CENTER);
+            //p1.setVerticalAlignment(TextAlignment.TOP);
+
+            XWPFRun r1 = p1.createRun();
+            r1.setBold(true);
+            r1.setText(user.getLogin());
+            r1.setFontFamily("TimesNewRoman");
+            r1.setUnderline(UnderlinePatterns.SINGLE);
+            r1.setFontSize(16);
+            //r1.setTextPosition(100);
+
+            /*XWPFParagraph p2 = doc.createParagraph();
+            p2.setAlignment(ParagraphAlignment.LEFT);
+
+            XWPFRun r2 = p2.createRun();
+            r2.setText("Возраст:");
+            r2.setItalic(true);
+            r2.setFontFamily("TimesNewRoman");
+            r2.setFontSize(14);
+            XWPFRun r3 = p2.createRun();
+            r3.setText(" "+user.getAge());
+            r3.setFontFamily("TimesNewRoman");
+            r3.setFontSize(14);*/
+
+            //create table
+            XWPFTable table = doc.createTable();
+
+            //create first row
+            XWPFTableRow tableRowOne = table.getRow(0);
+            tableRowOne.getCell(0).setText("Возраст:");
+            tableRowOne.addNewTableCell().setText(""+user.getAge());
+
+            XWPFTableRow row2 = table.createRow();
+            row2.getCell(0).setText("Дата рождения:");
+            row2.getCell(1).setText(""+user.getDateOfBirth().format(formatter));
+
+            try (FileOutputStream out = new FileOutputStream("user_report.docx")) {
+                doc.write(out);
+            } catch (FileNotFoundException e) {
+                System.out.println("Файл не найден: user_report.docx");
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void main(String[] args) {
         load();
         out(users);
@@ -280,6 +385,6 @@ public class Main {
         TreeMap<UUID, Integer> purchasedGoods = getPurchasedGoods();
         outPurchasedGoods(purchasedGoods);
 
-
+        createWord(users.get(0));
     }
 }
