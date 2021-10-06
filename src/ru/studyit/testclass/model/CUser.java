@@ -1,12 +1,28 @@
 package ru.studyit.testclass.model;
 
+import org.hibernate.annotations.GenericGenerator;
+
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.UUID;
 
+
+@Entity
+@Table(name = "users")
 public class CUser {
-    private boolean sex;
+    @Id
+    @GenericGenerator(name = "UUIDGenerator", strategy = "uuid2")
+    @GeneratedValue(generator = "UUIDGenerator")
+    @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
+
+    @Column(name = "sex")
+    private boolean sex;
+
+    @Column(name = "date_of_birth", columnDefinition = "DATE")
     private LocalDate dateOfBirth;
+
+    @Column(name = "login")
     private String login;
 
     public boolean getSex()
@@ -54,7 +70,13 @@ public class CUser {
         if (login.length()<=50)
             this.login = login;
     }
-
+    public CUser()
+    {
+        id = null;
+        sex = true;
+        dateOfBirth = LocalDate.now();
+        login = "";
+    }
     public CUser(String login, LocalDate dateOfBirth, boolean sex)
     {
         this(UUID.randomUUID(), login, dateOfBirth, sex);
