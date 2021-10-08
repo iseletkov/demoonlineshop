@@ -3,6 +3,8 @@ package ru.studyit.testclass;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xwpf.usermodel.*;
+import org.hibernate.Session;
+import ru.studyit.testclass.config.CConfigHibernate;
 import ru.studyit.testclass.model.CGood;
 import ru.studyit.testclass.model.COrder;
 import ru.studyit.testclass.model.CUser;
@@ -376,7 +378,7 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        load();
+        /*load();
         out(users);
 
 
@@ -385,6 +387,24 @@ public class Main {
         TreeMap<UUID, Integer> purchasedGoods = getPurchasedGoods();
         outPurchasedGoods(purchasedGoods);
 
-        createWord(users.get(0));
+        createWord(users.get(0));*/
+
+        try(Session session = CConfigHibernate.getSessionFactory().openSession())
+        {
+            session.beginTransaction();
+            CUser user1 = new CUser();
+            user1.setSex(true);
+            user1.setLogin("This is login");
+            user1.setDateOfBirth(LocalDate.now());
+
+            session.save(user1);
+
+            session.getTransaction().commit();
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+
     }
 }
