@@ -5,6 +5,7 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xwpf.usermodel.*;
 import org.hibernate.Session;
 import ru.studyit.testclass.config.CConfigHibernate;
+import ru.studyit.testclass.dao.CDAOUsers;
 import ru.studyit.testclass.model.CGood;
 import ru.studyit.testclass.model.COrder;
 import ru.studyit.testclass.model.CUser;
@@ -378,33 +379,38 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        /*load();
-        out(users);
+//        load();
+//        out(users);
 
 
-        createExcel(users);
+//        createExcel(users);
+//
+//        TreeMap<UUID, Integer> purchasedGoods = getPurchasedGoods();
+//        outPurchasedGoods(purchasedGoods);
+//
+//        createWord(users.get(0));
 
-        TreeMap<UUID, Integer> purchasedGoods = getPurchasedGoods();
-        outPurchasedGoods(purchasedGoods);
+        CDAOUsers daoUsers = new CDAOUsers(CConfigHibernate.getSessionFactory());
 
-        createWord(users.get(0));*/
+        //Сохранение списка пользователей в БД.
+        /*CUser user1 = new CUser();
+        user1.setSex(true);
+        user1.setLogin("This is login");
+        user1.setDateOfBirth(LocalDate.now());*/
+//        for (CUser user:users)
+//        {
+//            daoUsers.save(user);
+//        }
+        //daoUsers.saveList( users);
 
-        try(Session session = CConfigHibernate.getSessionFactory().openSession())
-        {
-            session.beginTransaction();
-            CUser user1 = new CUser();
-            user1.setSex(true);
-            user1.setLogin("This is login");
-            user1.setDateOfBirth(LocalDate.now());
+        //Загрузка списка пользователей из БД.
+        //List<CUser> users1 = daoUsers.getAll();
 
-            session.save(user1);
-
-            session.getTransaction().commit();
-        }
-        catch(Exception e)
-        {
-            e.printStackTrace();
-        }
+        //Получение пользователя по ID
+        CUser user = daoUsers.get(UUID.fromString("80c99edd-46bc-4669-9fb3-848755883d82"));
+        //Удаление пользователя из БД.
+        daoUsers.delete(user);
+        return;
 
     }
 }
