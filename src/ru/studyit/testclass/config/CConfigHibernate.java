@@ -4,6 +4,8 @@ import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
+import ru.studyit.testclass.model.CGood;
+import ru.studyit.testclass.model.COrder;
 import ru.studyit.testclass.model.CUser;
 
 import java.util.Properties;
@@ -35,7 +37,9 @@ public class CConfigHibernate {
                 configuration.setProperties(settings);
 
                 configuration.addAnnotatedClass(CUser.class);
-                //configuration.addAnnotatedClass(Auto.class);
+                configuration.addAnnotatedClass(COrder.class);
+                configuration.addAnnotatedClass(CGood.class);
+
                 StandardServiceRegistryBuilder builder = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties());
                 sessionFactory = configuration.buildSessionFactory(builder.build());
 

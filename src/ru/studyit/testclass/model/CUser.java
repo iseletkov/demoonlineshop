@@ -4,6 +4,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -24,6 +25,11 @@ public class CUser {
 
     @Column(name = "login")
     private String login;
+
+    @OneToMany(mappedBy="owner", fetch = FetchType.EAGER)
+    private List<COrder> orders;
+
+
 
     public boolean getSex()
     {
@@ -87,5 +93,9 @@ public class CUser {
         setLogin(login);
         setDateOfBirth(dateOfBirth);
         setSex(sex);
+    }
+
+    public List<COrder> getOrders() {
+        return orders;
     }
 }

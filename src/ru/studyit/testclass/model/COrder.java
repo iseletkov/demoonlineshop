@@ -1,42 +1,68 @@
 package ru.studyit.testclass.model;
 
+import org.hibernate.annotations.GenericGenerator;
+
+import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
+@Entity
+@Table(name = "orders")
 public class COrder {
 
+    @Id
+    @GenericGenerator(name = "UUIDGenerator", strategy = "uuid2")
+    @GeneratedValue(generator = "UUIDGenerator")
+    @Column(name = "id", updatable = false, nullable = false)
     UUID id;
-    UUID userId;
+    //UUID userId;
+    @ManyToOne
+    @JoinColumn(name="owner", nullable=false)
+    CUser owner;
+
+
+
     //Подразумеваем, что в одном заказе может быть несколько одинаковых товаров,
     //у них будут дублировать идентификаторы в этом списке.
-    ArrayList<UUID> goodIds ;
+
+    @ManyToMany
+    @JoinTable(
+            name = "goods_in_orders",
+            joinColumns = @JoinColumn(name = "order_id"),
+            inverseJoinColumns = @JoinColumn(name = "good_id"))
+    List<CGood> goods;
 
 
     public UUID getId()
     {
         return id;
     }
-    public UUID getUserId()
+    public CUser getOwner()
     {
-        return userId;
+        return owner;
     }
-    public void setUserId(UUID userId)
+    public void setOwner(CUser owner)
     {
-        this.userId = userId;
-    }
-
-    public ArrayList<UUID> getGoods()
-    {
-
-        return goodIds;
+        this.owner = owner;
     }
 
-    public COrder(UUID id, UUID userId)
+    public List<CGood> getGoods()
+    {
+        return goods;
+    }
+    public COrder()
+    {
+        id = null;
+        owner = null;
+        goods = new ArrayList<>();
+    }
+    public COrder(UUID id, CUser owner)
     {
         this.id = id;
-        setUserId(userId);
+        setOwner(owner);
 
-        goodIds = new ArrayList<>();
+        goods = new ArrayList<>();
     }
 
 }

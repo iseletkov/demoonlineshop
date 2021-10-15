@@ -5,6 +5,7 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xwpf.usermodel.*;
 import org.hibernate.Session;
 import ru.studyit.testclass.config.CConfigHibernate;
+import ru.studyit.testclass.dao.CDAOOrders;
 import ru.studyit.testclass.dao.CDAOUsers;
 import ru.studyit.testclass.model.CGood;
 import ru.studyit.testclass.model.COrder;
@@ -29,169 +30,170 @@ public class Main {
     /****************************************************************************************************
      * Метод считывает список пользователей из файла.                                                   *
      ***************************************************************************************************/
-    private static void loadUsers()
-    {
-        File file = new File("users.txt");
-        //Изменил тип данных с массива на коллекцию, чтобы не требовать указания в файле количества записей.
-        boolean sex;
-        String sDateOfBirth;
-        LocalDate dateOfBirth;
-        String login;
-        UUID id;
-
-        try (Scanner sc =  new Scanner(file))
-        {
-            //Здесь используется "регулярное выражение" - шаблон для строк.
-            //В данном случае имеется в виду, что в качестве разделителей используются любое подряд идущее колиество (+)
-            //любых исмволов из списка \r или \n или ;
-            sc.useDelimiter(Pattern.compile("[\\r\\n;]+"));
-            //Пока есть какие-то записи в файле...
-            while(sc.hasNext())
-            {
-                //Проверка строки на равенство "1" вернёт true только в одном случае.
-                id = UUID.fromString(sc.next());
-                sex ="1".equals(sc.next());
-                sDateOfBirth = sc.next();
-                login = sc.next();
-                //Преобразование даты из строки в специальный объект LocalDate.
-                dateOfBirth = LocalDate.parse(sDateOfBirth, formatter);
-                //Создание и добавление нового объекта в писок.
-                users.add(new CUser(id, login, dateOfBirth, sex));
-            }
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-
-        }
-    }
+//    private static void loadUsers()
+//    {
+//        File file = new File("users.txt");
+//        //Изменил тип данных с массива на коллекцию, чтобы не требовать указания в файле количества записей.
+//        boolean sex;
+//        String sDateOfBirth;
+//        LocalDate dateOfBirth;
+//        String login;
+//        UUID id;
+//
+//        try (Scanner sc =  new Scanner(file))
+//        {
+//            //Здесь используется "регулярное выражение" - шаблон для строк.
+//            //В данном случае имеется в виду, что в качестве разделителей используются любое подряд идущее колиество (+)
+//            //любых исмволов из списка \r или \n или ;
+//            sc.useDelimiter(Pattern.compile("[\\r\\n;]+"));
+//            //Пока есть какие-то записи в файле...
+//            while(sc.hasNext())
+//            {
+//                //Проверка строки на равенство "1" вернёт true только в одном случае.
+//                id = UUID.fromString(sc.next());
+//                sex ="1".equals(sc.next());
+//                sDateOfBirth = sc.next();
+//                login = sc.next();
+//                //Преобразование даты из строки в специальный объект LocalDate.
+//                dateOfBirth = LocalDate.parse(sDateOfBirth, formatter);
+//                //Создание и добавление нового объекта в писок.
+//                users.add(new CUser(id, login, dateOfBirth, sex));
+//            }
+//
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//
+//        }
+//    }
     /****************************************************************************************************
      * Метод считывает список товаров из файла.                                                         *
      ***************************************************************************************************/
-    private static void loadGoods()
-    {
-        File file = new File("goods.txt");
-        String name;
-        UUID id;
-
-        try (Scanner sc =  new Scanner(file))
-        {
-            //Здесь используется "регулярное выражение" - шаблон для строк.
-            //В данном случае имеется в виду, что в качестве разделителей используются любое подряд идущее колиество (+)
-            //любых исмволов из списка \r или \n или ;
-            sc.useDelimiter(Pattern.compile("[\\r\\n;]+"));
-            //Пока есть какие-то записи в файле...
-            while(sc.hasNext())
-            {
-                id = UUID.fromString(sc.next());
-                name = sc.next();
-
-                //Создание и добавление нового объекта в писок.
-                goods.add(new CGood(id, name));
-            }
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-
-        }
-    }
+//    private static void loadGoods()
+//    {
+//        File file = new File("goods.txt");
+//        String name;
+//        UUID id;
+//
+//        try (Scanner sc =  new Scanner(file))
+//        {
+//            //Здесь используется "регулярное выражение" - шаблон для строк.
+//            //В данном случае имеется в виду, что в качестве разделителей используются любое подряд идущее колиество (+)
+//            //любых исмволов из списка \r или \n или ;
+//            sc.useDelimiter(Pattern.compile("[\\r\\n;]+"));
+//            //Пока есть какие-то записи в файле...
+//            while(sc.hasNext())
+//            {
+//                id = UUID.fromString(sc.next());
+//                name = sc.next();
+//
+//                //Создание и добавление нового объекта в писок.
+//                goods.add(new CGood(id, name));
+//            }
+//
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//
+//        }
+//    }
     /****************************************************************************************************
      * Метод считывает список заказов из файла.                                                         *
      ***************************************************************************************************/
-    private static void loadOrders()
-    {
-        File file = new File("orders.txt");
-        UUID id;
-        UUID userId;
-        String temp;
-        Scanner sc1;
-        COrder order;
-        try (Scanner sc =  new Scanner(file))
-        {
-            //Здесь используется "регулярное выражение" - шаблон для строк.
-            //В данном случае имеется в виду, что в качестве разделителей используются любое подряд идущее колиество (+)
-            //любых исмволов из списка \r или \n или ;
-            sc.useDelimiter(Pattern.compile("[\\r\\n;]+"));
-            //Пока есть какие-то записи в файле...
-            while(sc.hasNext())
-            {
-                id = UUID.fromString(sc.next());
-                userId = UUID.fromString(sc.next());
-                order = new COrder(id, userId);
+//    private static void loadOrders()
+//    {
+//        File file = new File("orders.txt");
+//        UUID id;
+//        UUID userId;
+//        String temp;
+//        Scanner sc1;
+//        COrder order;
+//        try (Scanner sc =  new Scanner(file))
+//        {
+//            //Здесь используется "регулярное выражение" - шаблон для строк.
+//            //В данном случае имеется в виду, что в качестве разделителей используются любое подряд идущее колиество (+)
+//            //любых исмволов из списка \r или \n или ;
+//            sc.useDelimiter(Pattern.compile("[\\r\\n;]+"));
+//            //Пока есть какие-то записи в файле...
+//            while(sc.hasNext())
+//            {
+//                id = UUID.fromString(sc.next());
+//                userId = UUID.fromString(sc.next());
 
-                temp = sc.next();
-
-                sc1 = new Scanner(temp);
-                sc1.useDelimiter(Pattern.compile("[\\r\\n.]+"));
-
-                while(sc1.hasNext())
-                {
-                    order.getGoods().add(UUID.fromString(sc1.next()));
-                }
-
-                //Создание и добавление нового объекта в писок.
-                orders.add(order);
-            }
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-
-        }
-    }
-    private static void loadUsersExcel()
-    {
-        File file = new File("input_data.xlsx");
-        try (XSSFWorkbook wb = new XSSFWorkbook(file))
-        {
-            Sheet sheet = wb.getSheet("Пользователи");
-            int rows = sheet.getLastRowNum();
-            Row row;
-            Cell cell;
-            String temp, login;
-            UUID id;
-            boolean sex;
-            LocalDate dateOfBirth;
-            Double millis;
-
-
-            for (int i=1; i<=rows; i++) {
-                row = sheet.getRow(i);
-                if (row==null)
-                    continue;
-
-                cell = row.getCell(0);
-                temp = cell.getStringCellValue();
-                id = UUID.fromString(temp);
-
-                cell = row.getCell(3);
-                login = cell.getStringCellValue();
-
-                cell = row.getCell(1);
-                sex = cell.getNumericCellValue()==1;
-
-                cell = row.getCell(2);
-                //Преобразование даты из строки в специальный объект LocalDate.
-                dateOfBirth = cell.getDateCellValue().toInstant()
-                        .atZone(ZoneId.systemDefault())
-                        .toLocalDate();
-
-
-                users.add(new CUser(id, login, dateOfBirth, sex));
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    private static void load()
-    {
-        /*loadUsers();*/
-        loadGoods();
-        loadOrders();
-
-        loadUsersExcel();
-        //loadGoodsExcel();
-        //loadOrdersExcel();
-    }
+//                order = new COrder(id, userId);
+//
+//                temp = sc.next();
+//
+//                sc1 = new Scanner(temp);
+//                sc1.useDelimiter(Pattern.compile("[\\r\\n.]+"));
+//
+//                while(sc1.hasNext())
+//                {
+//                    order.getGoods().add(UUID.fromString(sc1.next()));
+//                }
+//
+//                //Создание и добавление нового объекта в писок.
+//                orders.add(order);
+//            }
+//
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//
+//        }
+//    }
+//    private static void loadUsersExcel()
+//    {
+//        File file = new File("input_data.xlsx");
+//        try (XSSFWorkbook wb = new XSSFWorkbook(file))
+//        {
+//            Sheet sheet = wb.getSheet("Пользователи");
+//            int rows = sheet.getLastRowNum();
+//            Row row;
+//            Cell cell;
+//            String temp, login;
+//            UUID id;
+//            boolean sex;
+//            LocalDate dateOfBirth;
+//            Double millis;
+//
+//
+//            for (int i=1; i<=rows; i++) {
+//                row = sheet.getRow(i);
+//                if (row==null)
+//                    continue;
+//
+//                cell = row.getCell(0);
+//                temp = cell.getStringCellValue();
+//                id = UUID.fromString(temp);
+//
+//                cell = row.getCell(3);
+//                login = cell.getStringCellValue();
+//
+//                cell = row.getCell(1);
+//                sex = cell.getNumericCellValue()==1;
+//
+//                cell = row.getCell(2);
+//                //Преобразование даты из строки в специальный объект LocalDate.
+//                dateOfBirth = cell.getDateCellValue().toInstant()
+//                        .atZone(ZoneId.systemDefault())
+//                        .toLocalDate();
+//
+//
+//                users.add(new CUser(id, login, dateOfBirth, sex));
+//            }
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
+//    private static void load()
+//    {
+//        /*loadUsers();*/
+//        loadGoods();
+//        loadOrders();
+//
+//        loadUsersExcel();
+//        //loadGoodsExcel();
+//        //loadOrdersExcel();
+//    }
     /****************************************************************************************************
      * Вывод списка пользователей в консоль.                                                            *
      * @param users - список пользователей.                                                             *
@@ -215,26 +217,26 @@ public class Main {
         }
     }
     
-    private static TreeMap<UUID, Integer> getPurchasedGoods()
-    {
-        TreeMap<UUID, Integer> purchasedGoods = new TreeMap<>();
-        for (COrder order : orders)
-        {
-            for (UUID goodId : order.getGoods())
-            {
-                if (purchasedGoods.containsKey(goodId))
-                {
-                    purchasedGoods.put(goodId, purchasedGoods.get(goodId)+1);
-                }
-                else
-                {
-                    purchasedGoods.put(goodId, 1);
-                }
-            }
-
-        }
-        return purchasedGoods;
-    }
+//    private static TreeMap<UUID, Integer> getPurchasedGoods()
+//    {
+//        TreeMap<UUID, Integer> purchasedGoods = new TreeMap<>();
+//        for (COrder order : orders)
+//        {
+//            for (UUID goodId : order.getGoods())
+//            {
+//                if (purchasedGoods.containsKey(goodId))
+//                {
+//                    purchasedGoods.put(goodId, purchasedGoods.get(goodId)+1);
+//                }
+//                else
+//                {
+//                    purchasedGoods.put(goodId, 1);
+//                }
+//            }
+//
+//        }
+//        return purchasedGoods;
+//    }
     /****************************************************************************************************
      * Вывод списка пользователей в консоль.                                                            *
      * @param purchasedGoods - список купленных товаров.                                                *
@@ -391,12 +393,15 @@ public class Main {
 //        createWord(users.get(0));
 
         CDAOUsers daoUsers = new CDAOUsers(CConfigHibernate.getSessionFactory());
+        CDAOOrders daoOrders = new CDAOOrders(CConfigHibernate.getSessionFactory());
 
         //Сохранение списка пользователей в БД.
         /*CUser user1 = new CUser();
         user1.setSex(true);
         user1.setLogin("This is login");
-        user1.setDateOfBirth(LocalDate.now());*/
+        user1.setDateOfBirth(LocalDate.now());
+        daoUsers.save(user);
+        */
 //        for (CUser user:users)
 //        {
 //            daoUsers.save(user);
@@ -407,9 +412,18 @@ public class Main {
         //List<CUser> users1 = daoUsers.getAll();
 
         //Получение пользователя по ID
-        CUser user = daoUsers.get(UUID.fromString("80c99edd-46bc-4669-9fb3-848755883d82"));
+        //CUser user = daoUsers.get(UUID.fromString("80c99edd-46bc-4669-9fb3-848755883d82"));
         //Удаление пользователя из БД.
-        daoUsers.delete(user);
+        //daoUsers.delete(user);
+
+        List<COrder> orders = daoOrders.getAll();
+        if (orders.size()>0)
+        {
+            CUser owner = orders.get(0).getOwner();
+            List<COrder> ordersOfFirstOwner = owner.getOrders();
+            int x = 0;
+        }
+
         return;
 
     }
