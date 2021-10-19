@@ -5,6 +5,7 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xwpf.usermodel.*;
 import org.hibernate.Session;
 import ru.studyit.testclass.config.CConfigHibernate;
+import ru.studyit.testclass.dao.CDAOGoods;
 import ru.studyit.testclass.dao.CDAOOrders;
 import ru.studyit.testclass.dao.CDAOUsers;
 import ru.studyit.testclass.model.CGood;
@@ -394,6 +395,7 @@ public class Main {
 
         CDAOUsers daoUsers = new CDAOUsers(CConfigHibernate.getSessionFactory());
         CDAOOrders daoOrders = new CDAOOrders(CConfigHibernate.getSessionFactory());
+        CDAOGoods daoGoods = new CDAOGoods(CConfigHibernate.getSessionFactory());
 
         //Сохранение списка пользователей в БД.
         /*CUser user1 = new CUser();
@@ -416,13 +418,29 @@ public class Main {
         //Удаление пользователя из БД.
         //daoUsers.delete(user);
 
-        List<COrder> orders = daoOrders.getAll();
+        /*List<COrder> orders = daoOrders.getAllWithGoods();
         if (orders.size()>0)
         {
-            CUser owner = orders.get(0).getOwner();
-            List<COrder> ordersOfFirstOwner = owner.getOrders();
+            //CUser owner = orders.get(0).getOwner();
+            //List<COrder> ordersOfFirstOwner = owner.getOrders();
+
+            List<CGood> goods1 = orders.get(0).getGoods();
             int x = 0;
-        }
+        }*/
+        /*CUser user = daoUsers.get("petrova");
+        List<CGood> goods1 = daoGoods.getAll();
+
+
+        COrder order = new COrder();
+        order.setOwner(user);
+        order.getGoods().add(goods1.get(0));
+        order.getGoods().add(goods1.get(3));
+
+        daoOrders.save(order);
+        */
+        CUser user = daoUsers.get("petrova");
+        List<CGood> goodsOfPetrova = daoGoods.getAllByUser(user);
+
 
         return;
 

@@ -4,6 +4,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import ru.studyit.testclass.model.COrder;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -102,5 +103,20 @@ public class CDAOOrders implements IDAO<COrder>{
         {
             e.printStackTrace();
         }
+    }
+    @SuppressWarnings("unchecked")
+    public List<COrder> getAllWithGoods(){
+        List<COrder> users;
+        try(Session session = sessionFactory.openSession())
+        {
+            users = session.createQuery("SELECT o from COrder o JOIN fetch o.goods").list();
+        }
+        catch(Exception e)
+        {
+            users = new ArrayList<>();
+            e.printStackTrace();
+        }
+        return users;
+
     }
 }

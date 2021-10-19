@@ -23,7 +23,7 @@ public class CGood {
     @Column(name = "name")
     private String name;
 
-    @ManyToMany(mappedBy = "goods")
+    @ManyToMany(mappedBy = "goods", fetch = FetchType.LAZY)
     private List<COrder> orders;
 
 
