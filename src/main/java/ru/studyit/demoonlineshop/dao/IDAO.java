@@ -1,7 +1,6 @@
-package ru.studyit.testclass.dao;
+package ru.studyit.demoonlineshop.dao;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 public interface IDAO<T> {

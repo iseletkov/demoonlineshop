@@ -1,4 +1,4 @@
-package ru.studyit.testclass.model;
+package ru.studyit.demoonlineshop.model;
 
 import org.hibernate.annotations.GenericGenerator;
 

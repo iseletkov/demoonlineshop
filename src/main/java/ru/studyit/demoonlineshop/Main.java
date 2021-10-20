@@ -1,23 +1,19 @@
-package ru.studyit.testclass;
+package ru.studyit.demoonlineshop;
 
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xwpf.usermodel.*;
-import org.hibernate.Session;
-import ru.studyit.testclass.config.CConfigHibernate;
-import ru.studyit.testclass.dao.CDAOGoods;
-import ru.studyit.testclass.dao.CDAOOrders;
-import ru.studyit.testclass.dao.CDAOUsers;
-import ru.studyit.testclass.model.CGood;
-import ru.studyit.testclass.model.COrder;
-import ru.studyit.testclass.model.CUser;
+import ru.studyit.demoonlineshop.config.CConfigHibernate;
+import ru.studyit.demoonlineshop.dao.CDAOGoods;
+import ru.studyit.demoonlineshop.dao.CDAOOrders;
+import ru.studyit.demoonlineshop.dao.CDAOUsers;
+import ru.studyit.demoonlineshop.model.CGood;
+import ru.studyit.demoonlineshop.model.COrder;
+import ru.studyit.demoonlineshop.model.CUser;
 
 import java.io.*;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.regex.Pattern;
+
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class Main {

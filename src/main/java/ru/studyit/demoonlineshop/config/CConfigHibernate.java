@@ -1,12 +1,12 @@
-package ru.studyit.testclass.config;
+package ru.studyit.demoonlineshop.config;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
-import ru.studyit.testclass.model.CGood;
-import ru.studyit.testclass.model.COrder;
-import ru.studyit.testclass.model.CUser;
+import ru.studyit.demoonlineshop.model.CGood;
+import ru.studyit.demoonlineshop.model.COrder;
+import ru.studyit.demoonlineshop.model.CUser;
 
 import java.util.Properties;
 

@@ -1,10 +1,9 @@
-package ru.studyit.testclass.dao;
+package ru.studyit.demoonlineshop.dao;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import ru.studyit.testclass.model.COrder;
+import ru.studyit.demoonlineshop.model.COrder;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;

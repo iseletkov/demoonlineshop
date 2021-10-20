@@ -1,30 +1,44 @@
-package ru.studyit.testclass.dao;
+package ru.studyit.demoonlineshop.dao;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
-import ru.studyit.testclass.model.CGood;
-import ru.studyit.testclass.model.CGood;
-import ru.studyit.testclass.model.CUser;
+import ru.studyit.demoonlineshop.model.CUser;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class CDAOGoods implements IDAO<CGood>{
+public class CDAOUsers implements IDAO<CUser>{
+
     private SessionFactory sessionFactory;
-    public CDAOGoods(SessionFactory sessionFactory)
+    public CDAOUsers(SessionFactory sessionFactory)
     {
         this.sessionFactory = sessionFactory;
     }
 
     @Override
-    public CGood get(UUID id)
+    public CUser get(UUID id)
     {
-        CGood user = null;
+        CUser user = null;
         try(Session session = sessionFactory.openSession())
         {
-            user = session.get(CGood.class, id);
+            user = session.get(CUser.class, id);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+        return user;
+    }
+    public CUser get(String  login)
+    {
+        CUser user = null;
+        try(Session session = sessionFactory.openSession())
+        {
+            Query<CUser> q = session.createQuery("Select u from CUser u where u.login=:login");
+            q.setParameter("login", login);
+            user = q.getSingleResult();
         }
         catch(Exception e)
         {
@@ -33,11 +47,11 @@ public class CDAOGoods implements IDAO<CGood>{
         return user;
     }
     @Override
-    public List<CGood> getAll(){
-        List<CGood> users;
+    public List<CUser> getAll(){
+        List<CUser> users;
         try(Session session = sessionFactory.openSession())
         {
-            users = session.createQuery("from CGood").list();
+            users = session.createQuery("from CUser").list();
         }
         catch(Exception e)
         {
@@ -46,25 +60,8 @@ public class CDAOGoods implements IDAO<CGood>{
         }
         return users;
     }
-
-    public List<CGood> getAllByUser(CUser user){
-        List<CGood> goods;
-        try(Session session = sessionFactory.openSession())
-        {
-            Query<CGood> q = session.createQuery("Select g from CGood g JOIN g.orders o WHERE o.owner=:user");
-            q.setParameter("user", user);
-
-            goods = q.list();
-        }
-        catch(Exception e)
-        {
-            goods = new ArrayList<>();
-            e.printStackTrace();
-        }
-        return goods;
-    }
     @Override
-    public void save(CGood user)
+    public void save(CUser user)
     {
         try(Session session = sessionFactory.openSession())
         {
@@ -79,7 +76,7 @@ public class CDAOGoods implements IDAO<CGood>{
             e.printStackTrace();
         }
     }
-    public void saveList(List<CGood> users)
+    public void saveList(List<CUser> users)
     {
         try(Session session = sessionFactory.openSession())
         {
@@ -96,7 +93,7 @@ public class CDAOGoods implements IDAO<CGood>{
         }
     }
     @Override
-    public void update(CGood user)
+    public void update(CUser user)
     {
         try(Session session = sessionFactory.openSession())
         {
@@ -110,7 +107,7 @@ public class CDAOGoods implements IDAO<CGood>{
         }
     }
     @Override
-    public void delete(CGood user)
+    public void delete(CUser user)
     {
         try(Session session = sessionFactory.openSession())
         {
@@ -123,5 +120,4 @@ public class CDAOGoods implements IDAO<CGood>{
             e.printStackTrace();
         }
     }
-
 }
