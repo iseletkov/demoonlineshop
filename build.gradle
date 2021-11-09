@@ -1,7 +1,10 @@
 plugins {
     id 'java'
     id 'application'
+    id 'org.openjfx.javafxplugin' version '0.0.10'
+    id 'org.jetbrains.kotlin.jvm' version "1.4.0"
 }
+
 
 version = '1.2.1'
 
@@ -13,6 +16,31 @@ compileTestJava.options.encoding = 'UTF-8'
 repositories {
     mavenCentral()
 }
+javafx {
+    version = "17"
+    modules = [ 'javafx.controls' , 'javafx.graphics']
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "11"
+}
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "11"
+}
+
+//kotlin {
+//    jvm().compilations.main {
+//        kotlinOptions {
+//            jvmTarget = "11"
+//        }
+//    }
+//}
+//tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+//    kotlinOptions {
+//        jvmTarget = "11"
+//    }
+//}
+
 
 dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
@@ -22,6 +50,8 @@ dependencies {
     implementation 'org.hibernate.orm:hibernate-core:6.0.0.Alpha9'
     implementation 'javax.persistence:javax.persistence-api:2.2'
     implementation 'org.postgresql:postgresql:42.2.24'
+
+    implementation 'no.tornado:tornadofx:1.7.20'
 }
 
 test {
