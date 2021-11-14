@@ -16,7 +16,7 @@ public class COrder {
     @GeneratedValue(generator = "UUIDGenerator")
     @Column(name = "id", updatable = false, nullable = false)
     UUID id;
-    //UUID userId;
+
     @ManyToOne
     @JoinColumn(name="owner", nullable=false)
     CUser owner;

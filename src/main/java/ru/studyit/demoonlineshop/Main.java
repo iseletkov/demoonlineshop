@@ -198,20 +198,20 @@ public class Main {
     private static void out(ArrayList<CUser> users)
     {
         System.out.println("|                 ID                   |                          Логин                     | Пол | Дата рождения | Возраст |");
-        for (CUser user : users) {
-            System.out.print("| ");
-            System.out.print(user.getId());
-            System.out.print(" | ");
-            System.out.printf("%50s", user.getLogin());
-            System.out.print(" | ");
-            System.out.printf("%3s", user.getSex() ? "М" : "Ж");
-            System.out.print(" | ");
-            System.out.printf("%13s", user.getDateOfBirth().format(formatter));
-            System.out.print(" | ");
-            System.out.printf("%7s", user.getAge());
-            System.out.print(" |");
-            System.out.println();
-        }
+//        for (CUser user : users) {
+//            System.out.print("| ");
+//            System.out.print(user.getId());
+//            System.out.print(" | ");
+//            System.out.printf("%50s", user.getLogin());
+//            System.out.print(" | ");
+//            System.out.printf("%3s", user.getSex() ? "М" : "Ж");
+//            System.out.print(" | ");
+//            System.out.printf("%13s", user.getDateOfBirth().format(formatter));
+//            System.out.print(" | ");
+//            System.out.printf("%7s", user.getAge());
+//            System.out.print(" |");
+//            System.out.println();
+//        }
     }
     
 //    private static TreeMap<UUID, Integer> getPurchasedGoods()
@@ -289,16 +289,16 @@ public class Main {
             row = sheet.createRow(nRow);
             nRow++;
 
-            cell = row.createCell(0);
-            cell.setCellValue(user.getId().toString());
-            cell = row.createCell(1);
-            cell.setCellValue(user.getLogin());
-            cell = row.createCell(2);
-            cell.setCellValue(user.getSex() ? "М" : "Ж");
-            cell = row.createCell(3);
-            cell.setCellValue(user.getDateOfBirth().format(formatter));
-            cell = row.createCell(4);
-            cell.setCellValue(user.getAge());
+//            cell = row.createCell(0);
+//            cell.setCellValue(user.getId().toString());
+//            cell = row.createCell(1);
+//            cell.setCellValue(user.getLogin());
+//            cell = row.createCell(2);
+//            cell.setCellValue(user.getSex() ? "М" : "Ж");
+//            cell = row.createCell(3);
+//            cell.setCellValue(user.getDateOfBirth().format(formatter));
+//            cell = row.createCell(4);
+//            cell.setCellValue(user.getAge());
         }
 
     }
@@ -332,7 +332,7 @@ public class Main {
 
             XWPFRun r1 = p1.createRun();
             r1.setBold(true);
-            r1.setText(user.getLogin());
+//            r1.setText(user.getLogin());
             r1.setFontFamily("TimesNewRoman");
             r1.setUnderline(UnderlinePatterns.SINGLE);
             r1.setFontSize(16);
@@ -355,13 +355,13 @@ public class Main {
             XWPFTable table = doc.createTable();
 
             //create first row
-            XWPFTableRow tableRowOne = table.getRow(0);
-            tableRowOne.getCell(0).setText("Возраст:");
-            tableRowOne.addNewTableCell().setText(""+user.getAge());
-
-            XWPFTableRow row2 = table.createRow();
-            row2.getCell(0).setText("Дата рождения:");
-            row2.getCell(1).setText(""+user.getDateOfBirth().format(formatter));
+//            XWPFTableRow tableRowOne = table.getRow(0);
+//            tableRowOne.getCell(0).setText("Возраст:");
+//            tableRowOne.addNewTableCell().setText(""+user.getAge());
+//
+//            XWPFTableRow row2 = table.createRow();
+//            row2.getCell(0).setText("Дата рождения:");
+//            row2.getCell(1).setText(""+user.getDateOfBirth().format(formatter));
 
             try (FileOutputStream out = new FileOutputStream("user_report.docx")) {
                 doc.write(out);
