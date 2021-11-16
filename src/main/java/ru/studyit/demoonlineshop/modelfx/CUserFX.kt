@@ -29,5 +29,10 @@ class CUserFX(
     fun propertyDateOfBirth()               = getProperty(CUserFX::dateOfBirth)
 
     val age                                 : Int
-        get()                               = Period.between(dateOfBirth, LocalDate.now()).years
+        get()                               {
+            return if (dateOfBirth==null)
+                0
+            else
+                Period.between(dateOfBirth, LocalDate.now()).years
+        }
 }

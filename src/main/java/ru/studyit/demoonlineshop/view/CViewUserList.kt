@@ -33,6 +33,12 @@ class CViewUserList : View("Пользователи в системе") {
             top {
                 menubar {
                     menu("Данные") {
+                        item("Товары").action {
+                            replaceWith<CViewGoodList>()
+                        }
+                    }
+
+                    menu("Правка") {
                         item("Сохранить").action {
                             viewModelUserList.save()
                         }

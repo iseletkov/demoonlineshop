@@ -1,4 +1,4 @@
-package ru.studyit.demoonlineshop.controllers
+package ru.studyit.demoonlineshop.services
 
 
 import javafx.collections.FXCollections
@@ -14,6 +14,7 @@ class CServiceUsers                         : Controller()
     private var daoUsers                    = CDAOUsers(CConfigHibernate.getSessionFactory())
 
     val users                               = FXCollections.observableArrayList<CUserFX>()
+
     fun getAll()                            : ObservableList<CUserFX>
     {
         users.clear()

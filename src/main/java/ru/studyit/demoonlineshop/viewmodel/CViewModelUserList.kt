@@ -1,6 +1,6 @@
 package ru.studyit.demoonlineshop.viewmodel
 
-import ru.studyit.demoonlineshop.controllers.CServiceUsers
+import ru.studyit.demoonlineshop.services.CServiceUsers
 import ru.studyit.demoonlineshop.modelfx.CUserFX
 import tornadofx.ViewModel
 
