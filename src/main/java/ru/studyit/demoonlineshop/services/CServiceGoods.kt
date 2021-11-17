@@ -4,15 +4,17 @@ import javafx.collections.FXCollections
 import javafx.collections.ObservableList
 import ru.studyit.demoonlineshop.config.CConfigHibernate
 import ru.studyit.demoonlineshop.dao.CDAOGoods
+import ru.studyit.demoonlineshop.dao.CDAOOrders
 import ru.studyit.demoonlineshop.model.CGood
 import ru.studyit.demoonlineshop.modelfx.CGoodFX
 import ru.studyit.demoonlineshop.modelfx.CUserFX
 import tornadofx.Controller
+import java.util.Comparator
 
 class CServiceGoods                         : Controller()
 {
-    private var daoGoods                    = CDAOGoods(CConfigHibernate.getSessionFactory())
-
+    private val daoGoods                    = CDAOGoods(CConfigHibernate.getSessionFactory())
+    private val daoOrders                   = CDAOOrders(CConfigHibernate.getSessionFactory())
     val goods                               = FXCollections.observableArrayList<CGoodFX>()
 
     fun getAll()                            : ObservableList<CGoodFX>
@@ -38,6 +40,8 @@ class CServiceGoods                         : Controller()
                         CGoodFX(good.id, good.name)
                     }
             )
+
+        goods.sortWith(Comparator.comparing(CGoodFX::name))
         return goods
     }
     fun save(
@@ -52,15 +56,51 @@ class CServiceGoods                         : Controller()
 //            else
 //                daoGoods.update(good)
 //        }
-        goods
+        val goodsSeq                        = goods
             .asSequence()
             .map{   goodfx ->
                 CGood(goodfx.id, goodfx.name)
             }
 
+        val goodsToSave                     = goodsSeq
+            .filter{ good ->
+                good.id==null
+            }
+            .toList()
 
+        daoGoods.saveList(goodsToSave)
 
+        val goodsToUpdate                   = goodsSeq
+            .filterNot{ good ->
+                good.id==null
+            }
+            .toList()
 
+        daoGoods.updateList(goodsToUpdate)
+
+        getAll()
+    }
+
+    fun delete(
+        goodfx                              : CGoodFX
+    )
+    {
+        val good                            = daoGoods.get(goodfx.id)
+        if (good == null)
+        {
+            goods.remove(goodfx)
+            return
+        }
+        val orders                          = daoOrders.getByGood(good)
+        if (orders.size==0)
+        {
+            daoGoods.delete(CGood(goodfx.id, goodfx.name))
+            goods.remove(goodfx)
+            return
+        }
+        //TODO Уведомить пользователя о том, что у товара есть заказы,
+        //и их надо удалить до удаления товара.
+        return
     }
 
 

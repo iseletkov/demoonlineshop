@@ -9,6 +9,11 @@ class CViewGoodList                         : View("Товары") {
     val viewModelGoodList                   : CViewModelGoodList
                                             by inject()
 
+    val table                               = tableview(viewModelGoodList.goods)  {
+        readonlyColumn("ID", CGoodFX::id)
+        column("Наименование", CGoodFX::propertyName).makeEditable()
+    }
+
     override val root                       = borderpane {
         top{
             menubar{
@@ -21,14 +26,17 @@ class CViewGoodList                         : View("Товары") {
                     item("Сохранить").action{
                         viewModelGoodList.save()
                     }
+                    item("Добавить").action{
+                        viewModelGoodList.addNew()
+                    }
+                    item("Удалить").action{
+                        viewModelGoodList.delete(table.selectedItem)
+                    }
                 }
             }
         }
         center{
-            tableview(viewModelGoodList.goods)  {
-                readonlyColumn("ID", CGoodFX::id)
-                column("Наименование", CGoodFX::propertyName).makeEditable()
-            }
+            this += table
         }
     }
 }

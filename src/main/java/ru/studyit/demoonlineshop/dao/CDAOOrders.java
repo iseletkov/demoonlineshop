@@ -2,7 +2,10 @@ package ru.studyit.demoonlineshop.dao;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
+import ru.studyit.demoonlineshop.model.CGood;
 import ru.studyit.demoonlineshop.model.COrder;
+import ru.studyit.demoonlineshop.model.CUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -116,6 +119,23 @@ public class CDAOOrders implements IDAO<COrder>{
             e.printStackTrace();
         }
         return users;
+
+    }
+    public List<COrder> getByGood(CGood good){
+        List<COrder> orders;
+        try(Session session = sessionFactory.openSession())
+        {
+            Query<COrder> query = session.createQuery("SELECT o from COrder o JOIN o.goods g where g.id=:id");
+            query.setParameter("id", good.getId());
+
+            orders =         query.list();
+        }
+        catch(Exception e)
+        {
+            orders = new ArrayList<>();
+            e.printStackTrace();
+        }
+        return orders;
 
     }
 }
